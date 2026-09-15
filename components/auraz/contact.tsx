@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from 'react'
 import { Check } from 'lucide-react'
 import { Reveal } from './reveal'
+import { supabase } from '@/lib/supabase'
 
 const fields = [
   { name: 'namn', label: 'Namn', type: 'text', full: false },
@@ -13,10 +14,38 @@ const fields = [
 
 export function Contact() {
   const [sent, setSent] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setSent(true)
+    setLoading(true)
+
+    const formData = new FormData(e.currentTarget)
+
+    const name = formData.get('namn') as string
+    const company = formData.get('foretag') as string
+    const email = formData.get('epost') as string
+    const phone = formData.get('telefon') as string
+    const message = formData.get('mal') as string
+
+    const { error } = await supabase.from('leads').insert([
+      {
+        name,
+        company,
+        email,
+        phone,
+        message,
+      },
+    ])
+
+    setLoading(false)
+
+    if (error) {
+      console.error('Fel vid sparande i Supabase:', error.message)
+      alert('Det uppstod ett fel när meddelandet skickades. Försök igen.')
+    } else {
+      setSent(true)
+    }
   }
 
   return (
@@ -89,9 +118,10 @@ export function Contact() {
 
                 <button
                   type="submit"
-                  className="mt-12 w-full bg-teal py-5 font-mono-label text-xs text-accent-foreground transition-transform hover:-translate-y-0.5"
+                  disabled={loading}
+                  className="mt-12 w-full bg-teal py-5 font-mono-label text-xs text-accent-foreground transition-transform hover:-translate-y-0.5 disabled:opacity-50"
                 >
-                  Boka möte
+                  {loading ? 'Skickar...' : 'Boka möte'}
                 </button>
               </form>
             )}
