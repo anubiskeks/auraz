@@ -52,7 +52,7 @@ export function Navbar() {
 
         <div className="flex items-center gap-3">
           <a
-            href="mailto:marcus@auraz.se"
+            href="#kontakt"
             className="hidden border border-teal px-6 py-3 font-mono-label text-xs text-teal transition-colors hover:bg-teal hover:text-accent-foreground sm:inline-block"
           >
             Boka möte
