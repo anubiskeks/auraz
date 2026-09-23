@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { Logo } from './logo'
 import { cn } from '@/lib/utils'
-import { ThemeToggle } from '@/components/theme-toggle'
+import { ThemeToggle } from '@/components/auraz/theme-toggle'
 
 const links = [
   { label: 'Tjänster', href: '#tjanster' },
