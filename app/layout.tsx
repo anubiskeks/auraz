@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Space_Grotesk, Space_Mono } from 'next/font/google'
+import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
 
 const spaceGrotesk = Space_Grotesk({
@@ -24,7 +25,6 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'dark',
   themeColor: '#080b0d',
 }
 
@@ -34,9 +34,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="sv" className={`${spaceGrotesk.variable} ${spaceMono.variable} dark`}>
+    <html lang="sv" className={`${spaceGrotesk.variable} ${spaceMono.variable}`} suppressHydrationWarning>
       <body className="antialiased">
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          {children}
+        </ThemeProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
