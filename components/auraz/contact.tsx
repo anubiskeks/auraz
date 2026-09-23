@@ -3,7 +3,6 @@
 import { useState, type FormEvent } from 'react'
 import { Check } from 'lucide-react'
 import { Reveal } from './reveal'
-import { supabase } from '@/lib/supabase'
 
 const fields = [
   { name: 'namn', label: 'Namn', type: 'text', full: false },
@@ -22,29 +21,33 @@ export function Contact() {
 
     const formData = new FormData(e.currentTarget)
 
-    const name = formData.get('namn') as string
-    const company = formData.get('foretag') as string
-    const email = formData.get('epost') as string
-    const phone = formData.get('telefon') as string
-    const message = formData.get('mal') as string
+    const payload = {
+      name: formData.get('namn') as string,
+      company: formData.get('foretag') as string,
+      email: formData.get('epost') as string,
+      phone: formData.get('telefon') as string,
+      message: formData.get('mal') as string,
+    }
 
-    const { error } = await supabase.from('leads').insert([
-      {
-        name,
-        company,
-        email,
-        phone,
-        message,
-      },
-    ])
+    try {
+      const response = await fetch('https://hook.eu1.make.com/3incm3srywp19lq5afmy4gg63vox8t46', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
 
-    setLoading(false)
-
-    if (error) {
-      console.error('Fel vid sparande i Supabase:', error.message)
-      alert('Det uppstod ett fel när meddelandet skickades. Försök igen.')
-    } else {
-      setSent(true)
+      if (response.ok) {
+        setSent(true)
+      } else {
+        alert('Det uppstod ett fel när meddelandet skickades. Försök igen.')
+      }
+    } catch (error) {
+      console.error('Fel vid sändning till Webhook:', error)
+      alert('Det uppstod ett nätverksfel. Försök igen.')
+    } finally {
+      setLoading(false)
     }
   }
 
