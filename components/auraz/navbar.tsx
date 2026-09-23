@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { Logo } from './logo'
 import { cn } from '@/lib/utils'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 const links = [
   { label: 'Tjänster', href: '#tjanster' },
@@ -51,6 +52,7 @@ export function Navbar() {
         </ul>
 
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           <a
             href="#kontakt"
             className="hidden border border-teal px-6 py-3 font-mono-label text-xs text-teal transition-colors hover:bg-teal hover:text-accent-foreground sm:inline-block"
